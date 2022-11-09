@@ -151,14 +151,9 @@ int result0(int inst0){
     if(temp<0) temp+=100;
     if(opc==0x23) temp+=50;
     if(inst0==0x13) temp+=20;
-    
     temp3=ins[temp];
-    result2=ins_list[temp3];
-    fun7=temp2-(result2>>25);
-    temp=(result2>>12)&0x7;
-    fun3=((inst0>>12)&0x7)-temp;
-    temp2=(inst0&0x7f)-opc;
-    return ((0-!(fun7+fun3+temp2))&temp3); 
+    
+    return ((0-!((inst0&0xfe00707f)-(temp3&0xfe00707f)))|temp3);
     //printf("%d opc, option1, fun7, fun3 =result/ %d %d %d %d %d\n",i,opc,option1,fun7,fun3,temp);
     //return ins[temp];
 }
