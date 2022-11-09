@@ -131,13 +131,15 @@ void cal(){
 
     return;
 }
-int result(int inst0){
+int result0(int inst0){
     int fun7=0;
     int fun3=0;
     int opc=0;
     int temp=0;
     int temp2=0;
+    int temp3=0;
     int option1=-1;
+    int result2=0;
 
     opc=inst0&0x7f;
     temp2=inst0>>25;
@@ -150,9 +152,15 @@ int result(int inst0){
     if(opc==0x23) temp+=50;
     if(inst0==0x13) temp+=20;
     
+    temp3=ins[temp];
+    result2=ins_list[temp3];
+    fun7=temp2-(result2>>25);
+    temp=(result2>>12)&0x7;
+    fun3=((inst0>>12)&0x7)-temp;
+    temp2=(inst0&0x7f)-opc;
+    return ((0-!(fun7+fun3+temp2))&temp3); 
     //printf("%d opc, option1, fun7, fun3 =result/ %d %d %d %d %d\n",i,opc,option1,fun7,fun3,temp);
-    
-    return ins[temp];
+    //return ins[temp];
 }
 
 int check(){
@@ -178,7 +186,7 @@ int main(){
 
    if(check()==1) printf("fine\n"); else printf("not fine\n");   
    
-   printf("CSRRC: 33, result=%d\n",result(CSRRC));
+   printf("NOP: 22, result=%d\n",result0(NOP));
    //printf("funct7 = %d\n, funct3=%d\n, opcode=%d\n",funct7,funct3,opcode);
     return 0;
 }
