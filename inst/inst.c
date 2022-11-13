@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define INS_NUM 57
 int ins_list[INS_NUM+1]={0,};
@@ -74,7 +76,7 @@ ins_list[18]=SRL;
 ins_list[19]=SUB;
 ins_list[20]=SLTIU;
 ins_list[21]=SRA;
-//ins_list[22]=NOP;
+ins_list[22]=NOP;
 ins_list[23]=JAL;
 ins_list[24]=JALR;
 ins_list[25]=BEQ;
@@ -102,30 +104,34 @@ ins_list[55]=MULHU;
 
     return;
 }
-void cal(){
+void cal4(){
     int fun7=0;
     int fun3=0;
+    int fun3_2=0;
     int opc=0;
     int temp=0;
     int temp2=0;
     int option1=-1;
 
-    for(int i=1;i<INS_NUM+1;i++)
+    for(int iv=1;iv<INS_NUM+1;iv++)
     {
-    opc=(ins_list[i])&0x7f;
-    temp2=ins_list[i]>>25;
-    option1+=((opc==0x37)||(opc==0x17)||(opc==0x6f)||(opc==0x67));
+    if(ins_list[iv]==0) continue;
+    opc=(ins_list[iv])&0x7f;
+    temp2=ins_list[iv]>>25;
+    option1+=((opc==0x37)||(opc==0x17)||(opc==0x6f)||(opc==0x67)||(opc==0x3)||(opc==0x23));
     fun7=(option1&((temp2>>5)&0x3))+2*((opc==0x33)&&(temp2&1));
-    fun3=option1&((ins_list[i]>>12)&0x7);
+    fun3=option1&((ins_list[iv]>>12)&0x7);
+    fun3_2=(ins_list[iv]>>12)&0x7;
     
     temp=opc-(fun7*8)-fun3;
     if(temp<0) temp+=100;
-    if(opc==0x23) temp+=50;
-    if(ins_list[i]==0x13) temp+=20;
+    if(opc==0x23) temp+=50+fun3_2;
+    if(opc==0x3) temp+=70+fun3_2;
+    if(ins_list[iv]==0x13) temp+=20;
     
     //printf("%d opc, option1, fun7, fun3 =result/ %d %d %d %d %d\n",i,opc,option1,fun7,fun3,temp);
     
-    ins[temp]=i;
+    ins[temp]=iv;
     option1=-1;
     }
 
@@ -134,6 +140,7 @@ void cal(){
 int result0(int inst0){
     int fun7=0;
     int fun3=0;
+    int fun3_2=0;
     int opc=0;
     int temp=0;
     int temp2=0;
@@ -143,13 +150,15 @@ int result0(int inst0){
 
     opc=inst0&0x7f;
     temp2=inst0>>25;
-    option1+=((opc==0x37)||(opc==0x17)||(opc==0x6f)||(opc==0x67));
+    option1+=((opc==0x37)||(opc==0x17)||(opc==0x6f)||(opc==0x67)||(opc==0x3)||(opc==0x23));
     fun7=(option1&((temp2>>5)&0x3))+2*((opc==0x33)&&(temp2&1));
     fun3=option1&((inst0>>12)&0x7);
+    fun3_2=(inst0>>12)&0x7;
     
     temp=opc-(fun7*8)-fun3;
     if(temp<0) temp+=100;
-    if(opc==0x23) temp+=50;
+    if(opc==0x23) temp+=50+fun3_2;
+    if(opc==0x3) temp+=70+fun3_2;
     if(inst0==0x13) temp+=20;
     temp3=ins[temp];
     
@@ -157,14 +166,37 @@ int result0(int inst0){
     //printf("%d opc, option1, fun7, fun3 =result/ %d %d %d %d %d\n",i,opc,option1,fun7,fun3,temp);
     //return ins[temp];
 }
+void readinst23(char* ptr2){
+    int first=9;
+    int last=strlen(ptr2)-4;
+    int value=0;
+    int hex=16;
+    char a=0;
 
-int check(){
+    for(int ii=first;ii<last;ii+=8)
+    {
+       for(int iii=0;iii<8;iii++)
+       {
+           a=*(ptr2+ii+iii);
+           value+=hex*(a-48+(~((a-58)>>7)*7));
+           if(iii%2==0) hex>>=4;
+           else hex<<=12;
+       }
+       printf("inst: %d\n",result0(value));
+       value=0;
+       hex=16;
+    }
+       
+}
+
+int check1(){
 
     int fine=0;
 
     for(int i=1;i<128;i++)
     {
         if(ins[i]!=0) fine++;
+  //      printf("ins[%d]=%d\n",i,ins[i]); 
     }
     printf("number of 1 : %d\n",fine);
     //return (fine==INS_NUM);
@@ -175,14 +207,35 @@ int main(){
    int funct7=0;
    int funct3=0;
    int opcode=0;
+   FILE *pFile=NULL;
+   char buffer[43];
+   //int size=0;
    ins_in();
-   cal();
+   cal4();
 
-
-   if(check()==1) printf("fine\n"); else printf("not fine\n");   
-   
-   printf("NOP: 22, result=%d\n",result0(NOP));
+   if(check1()==1) printf("fine\n"); else printf("not fine\n");   
+   //printf("SB: 45, result=%d\n",result0(SB));
+   //printf("SH: 46, result=%d\n",result0(SH));
    //printf("funct7 = %d\n, funct3=%d\n, opcode=%d\n",funct7,funct3,opcode);
+
+   pFile=fopen("aaa.hex","r");
+   if(pFile==NULL) {return 0;}
+   else {
+       
+       //fseek(pFile,0,SEEK_END);
+       //size=ftell(pFile);
+       //fseek(pFile,0,SEEK_SET);
+
+       fgets(buffer,43,pFile);
+       while(strlen(buffer)!=13)
+       {
+       fgets(buffer,43,pFile);
+       readinst23(buffer); 
+       }
+       printf("hello\n");
+       fclose(pFile);
+   }
+       
     return 0;
 }
 
