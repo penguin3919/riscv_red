@@ -188,7 +188,7 @@ void readinst23(unsigned char* ptr2,int size){
     //int last=strlen(ptr2)-4;
     int value=0;
     int hex=1;
-    char a=0;
+    unsigned char a=0;
 
     for(int ii=0;ii<size;ii+=4)
     {
