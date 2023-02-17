@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void unit2(unsigned int inst2){
+void unit2(int line, unsigned int inst2){
     short opcode=inst2&0x7f;
     short funct3=(inst2>>12)&0x7;
     short funct7=(inst2>>25)&0x7f;
@@ -15,6 +15,7 @@ void unit2(unsigned int inst2){
     int imm=0;
     int temp=0;
     int temp2=0;
+    int jump0=0;
     char inst3[5];
     char* load[6]={"lb","lh","lw","nop","lbu","lhu"};
     char* branch[8]={"beq","bne","nop","nop","blt","bge","blt","bge"};
@@ -42,6 +43,7 @@ void unit2(unsigned int inst2){
                 (((imm>>8)&0x1)<<10)|
                 (((imm>>19)&0x1)<<19);
             imm=(imm<<12)>>12;
+            jump0=line+1+(imm/2);
             break;
         case 103:
         case 3:
@@ -57,13 +59,14 @@ void unit2(unsigned int inst2){
             strncpy(inst3,branch[funct3],5);
             format=3;
             imm=(inst2>>7)&0x1f;
-            imm=(((funct7>>6)&0x1)<<12)|
-                ((imm&0x1)<<11)|
-                ((funct7&0x3f)<<5)|
+            imm=(((funct7>>6)&0x1)<<11)|
+                ((imm&0x1)<<10)|
+                ((funct7&0x3f)<<4)|
                 ((imm>>1)&0xf);
             imm=(imm<<20)>>20;
             rs1=(inst2>>15)&0x1f;
             rs2=(inst2>>20)&0x1f;
+            jump0=line+1+(imm/2);
             break;
         case 35:
             strncpy(inst3,store[funct3],5);
@@ -108,7 +111,7 @@ void unit2(unsigned int inst2){
     }
     //printf("%d\n",opcode);
     //printf("%s\n",inst3); //inst3
-
+    printf("jump%d: ",line+1);
     switch(format)
     {
         case 0://R
@@ -126,13 +129,13 @@ void unit2(unsigned int inst2){
             printf("%s x%d, x%d, %d\n",inst3,rs1,rs2,imm);
             break;
         case 3://B
-            printf("%s x%d, x%d, %d\n",inst3,rs1,rs2,imm);
+            printf("%s x%d, x%d, jump%d\n",inst3,rs1,rs2,jump0);
             break;
         case 4://U
             printf("%s x%d, %d\n",inst3,rd,imm);
             break;
         case 5://J
-            printf("%s x%d, %d\n",inst3,rd,imm);
+            printf("%s x%d, jump%d\n",inst3,rd,jump0);
             break;
         default:
             printf("no op found\n");
@@ -181,7 +184,7 @@ int main(){
     {
     a=read23(aa);
     //printf("%s\n",argv[1]);
-    unit2(a);
+    unit2(i,a);
     }
     }
 
