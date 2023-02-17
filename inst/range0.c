@@ -5,6 +5,8 @@
 int b_link=0;
 int link0=0;
 int b_freq=0;
+int line0=0;
+short zero_set=0;
 short print_end=0;
 
 void unit2(int line, unsigned int inst2){
@@ -50,11 +52,13 @@ void unit2(int line, unsigned int inst2){
             imm=(imm<<12)>>12;
             jump0=line+1+(imm/2);
             if(b_link==jump0) b_freq++;
-            if(link0==jump0) print_end=1;
-            if(b_freq==2) 
+            if(zero_set==1 && link0==jump0) print_end=1;
+            if(zero_set==0 && b_freq==2) 
             {
                 //print_end=1;
+                line0=line+1;
                 link0=jump0;
+                zero_set=1;
             }
             b_link=jump0;
             break;
@@ -81,11 +85,13 @@ void unit2(int line, unsigned int inst2){
             rs2=(inst2>>20)&0x1f;
             jump0=line+1+(imm/2);
             if(b_link==jump0) b_freq++;
-            if(link0==jump0) print_end=1;
-            if(b_freq==2) 
+            if(zero_set==1 && link0==jump0) print_end=1;
+            if(zero_set==0 && b_freq==2) 
             {
                 //print_end=1;
+                line0=line+1;
                 link0=jump0;
+                zero_set=1;
             }
             b_link=jump0;
             break;
@@ -135,12 +141,15 @@ void unit2(int line, unsigned int inst2){
      
     //if(b_freq==4) printf("b_link=%d, b_freq=%d\n",b_link,b_freq);
    //print_instruction_start 
-/*
+
     if(print_end!=1)
     {
-    printf("jump%d: ",line+1);
-    switch(format)
-    {
+        if(line!=0 && line==line0)
+            printf("jump00: ");
+        else printf("jump%d: ",line+1);
+    
+        switch(format)
+        {
         case 0://R
             if(opcode==19) 
             {
@@ -150,10 +159,13 @@ void unit2(int line, unsigned int inst2){
             printf("%s x%d, x%d, x%d\n",inst3,rd,rs1,rs2);
             break;
         case 1://I
+            if(opcode==3 || opcode==103)
+                printf("%s x%d, %d(x%d)\n",inst3,rd,imm,rs1);
+            else
             printf("%s x%d, x%d, %d\n",inst3,rd,rs1,imm);
             break;
         case 2://S
-            printf("%s x%d, x%d, %d\n",inst3,rs1,rs2,imm);
+            printf("%s x%d, %d(x%d)\n",inst3,rs2,imm,rs1);
             break;
         case 3://B
             printf("%s x%d, x%d, jump%d\n",inst3,rs1,rs2,jump0);
@@ -169,7 +181,7 @@ void unit2(int line, unsigned int inst2){
 
     }
     }
-*/
+
    //print_instruction_end
     return;
 }
@@ -206,7 +218,7 @@ int main(){
     length=ftell(ppFile)/9;
     fseek(ppFile,0,SEEK_SET);
     //printf("size: %d\n",length);
-
+    printf("jal x0, jump00\n");
     for(i=0;i<length;i++) 
     {
     if(print_end==1) break;
@@ -218,7 +230,8 @@ int main(){
     unit2(i,a);
     }
     }
-printf("link, freq: %d, %d\n",b_link,b_freq);
-printf("lines: %d\n",i);
+//printf("link, freq: %d, %d\n",b_link,b_freq);
+//printf("lines: %d\n",i);
+//printf("line0: %d\n",line0);
     return 0;
 }
