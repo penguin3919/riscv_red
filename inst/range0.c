@@ -9,6 +9,111 @@ int line0=0;
 short zero_set=0;
 short print_end=0;
 
+typedef struct {
+    unsigned char ident[16];
+    unsigned short type;
+    unsigned short machine;
+    unsigned int version;
+    unsigned int entry;
+    unsigned int phoff;
+    unsigned int shoff;
+    unsigned int flags;
+    unsigned short ehsize;
+    unsigned short phentsize;
+    unsigned short phnum;
+    unsigned short shentsize;
+    unsigned short shnum;
+    unsigned short shstrndx;
+} elfHeader;
+
+void readinst23(FILE* mid, unsigned char* ptr2,int size){
+    //int first=9;
+    //int last=strlen(ptr2)-4;
+    int value=0;
+    int hex=1;
+    char temp[10];
+    unsigned char a=0;
+
+    for(int ii=0;ii<size;ii+=4)
+    {
+       for(int iii=0;iii<4;iii++)
+       {
+           a=*(ptr2+ii+iii);
+           //value+=hex*(a-48+(~((a-58)>>7)*7));
+           value+=hex*a;
+           hex<<=8;
+       }
+       //printf("%x\n",value);
+       //printf("inst: %d\n",result0(value));
+   //printf("wow\n");
+       sprintf(temp,"%08x\n",value);
+       fwrite(temp,1,9,mid);
+       value=0;
+       hex=1;
+    }
+    
+       
+}
+
+int readelf(FILE* pFile, unsigned char** text0,int* size)
+{
+    if(pFile == NULL)
+    {
+        return -1;
+    }
+    else
+    {
+        elfHeader ehdr;
+        int stroff=0;
+        int strsize=0;
+        int name;
+        int temp=0;
+        int goal=0;
+        int goaloff=0;
+        int goalsize=0;
+        
+        fseek(pFile,0,SEEK_SET);
+        fread(&ehdr,52,1,pFile);
+        
+        temp=ehdr.shoff+(ehdr.shstrndx*ehdr.shentsize)+16;
+        
+        fseek(pFile,temp,SEEK_SET);
+        fread(&stroff,4,1,pFile);
+        
+        fseek(pFile,temp+4,SEEK_SET);
+        fread(&strsize,4,1,pFile);
+        
+        char* strtab=(char*)malloc(strsize);
+        fseek(pFile,stroff,SEEK_SET);
+        fread(strtab,1,strsize,pFile);
+
+        for(int i=0;i<ehdr.shnum;i++)
+        {
+            fseek(pFile,ehdr.shoff+(i*ehdr.shentsize),SEEK_SET);
+            fread(&name,4,1,pFile);
+            if(!strncmp(strtab+name,".text",5))
+            {
+                goal=i;
+                break;
+            }
+        }
+        
+        temp=ehdr.shoff+(goal*ehdr.shentsize)+16;
+        
+        fseek(pFile,temp,SEEK_SET);
+        fread(&goaloff,4,1,pFile);
+        
+        fseek(pFile,temp+4,SEEK_SET);
+        fread(&goalsize,4,1,pFile);
+        *size=goalsize;
+        *text0=(unsigned char*)malloc(goalsize);
+        fseek(pFile,goaloff,SEEK_SET);
+        fread(*text0,1,goalsize,pFile);
+        free(strtab);
+    } 
+        return 0;
+}
+
 void unit2(int line, unsigned int inst2){
     short opcode=inst2&0x7f;
     short funct3=(inst2>>12)&0x7;
@@ -202,34 +307,50 @@ int read23(unsigned char* ptr){
 
 int main(){
 
-    //unsigned int inst=0xfa010113;
-    //unsigned int inst=0x000780e7;
-
-    //unit2(0x008bfe63);
+    int read=0;
+    int read_size=0;
+    unsigned char* text=NULL;
     FILE* ppFile=NULL;
-    //ppFile=fopen("read02.txt","r");
-    ppFile=fopen("a215.txt","r");
+    FILE* midFile=NULL;
+
     char aa[9];
     int a=0;
     int length=0;
     int i=0;
+    FILE* endFile=NULL;
+//inst3.c
+   ppFile = fopen("example-hpm.elf","rb");
+   midFile=fopen("mid.txt","w");
+   read=readelf(ppFile,&text,&read_size);
+   if(read == 0)
+   {
+       readinst23(midFile,text,read_size);
+   }
+   fclose(midFile);
+//range0.c
+    endFile=fopen("mid.txt","r");
 
-    fseek(ppFile,0,SEEK_END);
-    length=ftell(ppFile)/9;
-    fseek(ppFile,0,SEEK_SET);
+    fseek(endFile,0,SEEK_END);
+    length=ftell(endFile)/9;
+    fseek(endFile,0,SEEK_SET);
     //printf("size: %d\n",length);
     printf("jal x0, jump00\n");
     for(i=0;i<length;i++) 
     {
     if(print_end==1) break;
-    fread(aa,9,1,ppFile);
+    fread(aa,9,1,endFile);
     if(aa!=NULL)
     {
     a=read23(aa);
     //printf("%s\n",argv[1]);
+    //printf("a: %x\n",a);
     unit2(i,a);
     }
     }
+   
+    free(text);
+    fclose(endFile);
+    fclose(ppFile);
 //printf("link, freq: %d, %d\n",b_link,b_freq);
 //printf("lines: %d\n",i);
 //printf("line0: %d\n",line0);
