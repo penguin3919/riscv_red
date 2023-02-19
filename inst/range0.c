@@ -114,7 +114,7 @@ int readelf(FILE* pFile, unsigned char** text0,int* size)
         return 0;
 }
 
-void unit2(int line, unsigned int inst2){
+void unit2(FILE* mid2,int line, unsigned int inst2){
     short opcode=inst2&0x7f;
     short funct3=(inst2>>12)&0x7;
     short funct7=(inst2>>25)&0x7f;
@@ -129,6 +129,9 @@ void unit2(int line, unsigned int inst2){
     int temp2=0;
     int jump0=0;
     char inst3[5];
+    char temp3[10];
+    char temp4[40];
+
     char* load[6]={"lb","lh","lw","nop","lbu","lhu"};
     char* branch[8]={"beq","bne","nop","nop","blt","bge","blt","bge"};
     char* store[3]={"sb","sh","sw"};
@@ -250,42 +253,44 @@ void unit2(int line, unsigned int inst2){
     if(print_end!=1)
     {
         if(line!=0 && line==line0)
-            printf("jump00: ");
-        else printf("jump%d: ",line+1);
+            sprintf(temp3,"jump00:");
+        else sprintf(temp3,"jump%d:",line+1);
     
         switch(format)
         {
         case 0://R
             if(opcode==19) 
             {
-            printf("%s x%d, x%d, %d\n",inst3,rd,rs1,shamt);
+            sprintf(temp4,"%s %s x%d, x%d, %d\n",temp3,inst3,rd,rs1,shamt);
             break;
             }
-            printf("%s x%d, x%d, x%d\n",inst3,rd,rs1,rs2);
+            sprintf(temp4,"%s %s x%d, x%d, x%d\n",temp3, inst3,rd,rs1,rs2);
             break;
         case 1://I
             if(opcode==3 || opcode==103)
-                printf("%s x%d, %d(x%d)\n",inst3,rd,imm,rs1);
+                sprintf(temp4,"%s %s x%d, %d(x%d)\n",temp3,inst3,rd,imm,rs1);
             else
-            printf("%s x%d, x%d, %d\n",inst3,rd,rs1,imm);
+            sprintf(temp4,"%s %s x%d, x%d, %d\n",temp3,inst3,rd,rs1,imm);
             break;
         case 2://S
-            printf("%s x%d, %d(x%d)\n",inst3,rs2,imm,rs1);
+            sprintf(temp4,"%s %s x%d, %d(x%d)\n",temp3,inst3,rs2,imm,rs1);
             break;
         case 3://B
-            printf("%s x%d, x%d, jump%d\n",inst3,rs1,rs2,jump0);
+            sprintf(temp4,"%s %s x%d, x%d, jump%d\n",temp3,inst3,rs1,rs2,jump0);
             break;
         case 4://U
-            printf("%s x%d, %d\n",inst3,rd,imm);
+            sprintf(temp4,"%s %s x%d, %d\n",temp3,inst3,rd,imm);
             break;
         case 5://J
-            printf("%s x%d, jump%d\n",inst3,rd,jump0);
+            sprintf(temp4,"%s %s x%d, jump%d\n",temp3,inst3,rd,jump0);
             break;
         default:
-            printf("no op found\n");
+            sprintf(temp4,"%s no op found\n",temp3);
 
     }
     }
+    fwrite(temp4,1,strlen(temp4),mid2);
+    //fwrite(temp2,1,strlen(temp2),mid2File);
 
    //print_instruction_end
     return;
@@ -314,10 +319,14 @@ int main(){
     FILE* midFile=NULL;
 
     char aa[9];
+    char temp2[20];
     int a=0;
     int length=0;
     int i=0;
     FILE* endFile=NULL;
+    
+    FILE* mid2File=NULL;
+    int max=0;
 //inst3.c
    ppFile = fopen("example-hpm.elf","rb");
    midFile=fopen("mid.txt","w");
@@ -334,7 +343,11 @@ int main(){
     length=ftell(endFile)/9;
     fseek(endFile,0,SEEK_SET);
     //printf("size: %d\n",length);
-    printf("jal x0, jump00\n");
+    mid2File=fopen("mid2.txt","w");
+    sprintf(temp2,"jal x0, jump00\n");
+    //printf("sizeof:temp2: %d\n",strlen(temp2));
+    fwrite(temp2,1,strlen(temp2),mid2File);
+    
     for(i=0;i<length;i++) 
     {
     if(print_end==1) break;
@@ -344,13 +357,19 @@ int main(){
     a=read23(aa);
     //printf("%s\n",argv[1]);
     //printf("a: %x\n",a);
-    unit2(i,a);
+    unit2(mid2File,i,a);
     }
     }
-   
-    free(text);
+    fclose(mid2File);
     fclose(endFile);
+
+    endFile=fopen("mid2.txt","r+");
+    max=i-1;
+  
+    
+    free(text);
     fclose(ppFile);
+    fclose(endFile);
 //printf("link, freq: %d, %d\n",b_link,b_freq);
 //printf("lines: %d\n",i);
 //printf("line0: %d\n",line0);
