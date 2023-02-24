@@ -309,6 +309,66 @@ int read23(unsigned char* ptr){
     //printf("%x\n",sum);
     return sum;
 }
+int jump_limit(FILE* ppFile0,FILE* endend,int max0)
+{ 
+   char aa0[40];
+   
+   int i=0;
+   int m=0;
+   int sum0=0;
+   int ten0=1;
+
+   const char* strj="jump";
+
+   int select0=0;
+   int start0=0;
+   int end0=0;
+
+   //line: max0+1
+   for(m=0;m<max0+1;m++)
+   {//1
+   fgets(aa0,40,ppFile0);
+   select0=0;
+
+   for(i=4;i<strlen(aa0);i++)
+   {
+       if(!strncmp(aa0+i,strj,4))
+       {
+           //printf("%d wow",strlen(aa0));
+           start0=i+4;
+           select0=1;
+           break;
+       }
+   }
+   if(select0==1)
+   {
+       end0=strlen(aa0)-2;
+       ten0=1;
+       sum0=0;
+   for(i=0;i<end0-start0+1;i++)
+   {
+       sum0+=ten0*(aa0[end0-i]-48);
+       ten0*=10;
+   }
+   //printf("hi sum0: %d\n",sum0);
+
+   if(sum0>max0)
+   {
+       aa0[start0]=48;
+       aa0[start0+1]=48;
+       aa0[start0+2]='\n';
+       aa0[start0+3]='\0';
+       }
+   }
+   //printf("%s\n",aa0);
+   fwrite(aa0,1,strlen(aa0),endend);
+   }//1
+    
+   //printf("start0: %c\n",aa0[start0]);
+   //printf("end0: %c",aa0[strlen(aa0)-2]);
+
+    return 0;
+}
 
 int main(){
 
@@ -327,6 +387,8 @@ int main(){
     
     FILE* mid2File=NULL;
     int max=0;
+
+    FILE* endend0=NULL;
 //inst3.c
    ppFile = fopen("example-hpm.elf","rb");
    midFile=fopen("mid.txt","w");
@@ -363,13 +425,16 @@ int main(){
     fclose(mid2File);
     fclose(endFile);
 
-    endFile=fopen("mid2.txt","r+");
+    endFile=fopen("mid2.txt","r");
+    endend0=fopen("fin0.txt","w");
     max=i-1;
+    max=jump_limit(endFile,endend0,max);
   
     
     free(text);
     fclose(ppFile);
     fclose(endFile);
+    fclose(endend0);
 //printf("link, freq: %d, %d\n",b_link,b_freq);
 //printf("lines: %d\n",i);
 //printf("line0: %d\n",line0);
