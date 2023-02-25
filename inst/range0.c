@@ -26,7 +26,7 @@ typedef struct {
     unsigned short shstrndx;
 } elfHeader;
 
-void readinst23(FILE* mid, unsigned char* ptr2,int size){
+void text_to_8bit_inst(FILE* mid, unsigned char* ptr2,int size){
     //int first=9;
     //int last=strlen(ptr2)-4;
     int value=0;
@@ -114,7 +114,7 @@ int readelf(FILE* pFile, unsigned char** text0,int* size)
         return 0;
 }
 
-void unit2(FILE* mid2,int line, unsigned int inst2){
+void hex_to_instruction(FILE* mid2,int line, unsigned int inst2){
     short opcode=inst2&0x7f;
     short funct3=(inst2>>12)&0x7;
     short funct7=(inst2>>25)&0x7f;
@@ -295,7 +295,8 @@ void unit2(FILE* mid2,int line, unsigned int inst2){
    //print_instruction_end
     return;
 }
-int read23(unsigned char* ptr){
+//int read23(unsigned char* ptr){
+int hex_to_dec(unsigned char* ptr){
     int hex=1;
     int sum=0;
     int temp=0;
@@ -309,7 +310,7 @@ int read23(unsigned char* ptr){
     //printf("%x\n",sum);
     return sum;
 }
-int jump_limit(FILE* ppFile0,FILE* endend,int max0)
+int delete_exceeded_label_range(FILE* ppFile0,FILE* endend,int max0)
 { 
    char aa0[40];
    
@@ -395,7 +396,7 @@ int main(){
    read=readelf(ppFile,&text,&read_size);
    if(read == 0)
    {
-       readinst23(midFile,text,read_size);
+       text_to_8bit_inst(midFile,text,read_size);
    }
    fclose(midFile);
 //range0.c
@@ -416,10 +417,10 @@ int main(){
     fread(aa,9,1,endFile);
     if(aa!=NULL)
     {
-    a=read23(aa);
+    a=hex_to_dec(aa);
     //printf("%s\n",argv[1]);
     //printf("a: %x\n",a);
-    unit2(mid2File,i,a);
+    hex_to_instruction(mid2File,i,a);
     }
     }
     fclose(mid2File);
@@ -428,7 +429,7 @@ int main(){
     endFile=fopen("mid2.txt","r");
     endend0=fopen("fin0.txt","w");
     max=i-1;
-    max=jump_limit(endFile,endend0,max);
+    max=delete_exceeded_label_range(endFile,endend0,max);
   
     
     free(text);
