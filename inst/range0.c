@@ -26,7 +26,7 @@ typedef struct {
     unsigned short shstrndx;
 } elfHeader;
 
-void text_to_8bit_inst(FILE* mid, unsigned char* ptr2,int size){
+void text_to_4byte_inst(FILE* mid, unsigned char* ptr2,int size){
     //int first=9;
     //int last=strlen(ptr2)-4;
     int value=0;
@@ -396,7 +396,7 @@ int main(){
    read=readelf(ppFile,&text,&read_size);
    if(read == 0)
    {
-       text_to_8bit_inst(midFile,text,read_size);
+       text_to_4byte_inst(midFile,text,read_size);
    }
    fclose(midFile);
 //range0.c
