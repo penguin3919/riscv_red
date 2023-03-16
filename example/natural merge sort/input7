@@ -1,0 +1,174 @@
+jal x0, jump24
+jump0: addi x2, x2, -640
+sw x1, 636(x2)
+addi x12, x0, 204
+addi x11, x0, 0
+addi x10, x2, 420
+jal x1, jump27 
+addi x12, x0, 204
+addi x11, x0, 0
+addi x10, x2, 216
+jal x1, jump27 
+addi x12, x0, 204
+addi x11, x0, 0
+addi x10, x2, 12
+jal x1, jump27 
+addi x15, x0, 0
+jal x0, jump2 
+jump1: addi x13, x0, 51
+sub x13, x13, x15
+slli x14, x15, 2
+addi x14, x14, 624 
+add x14, x14, x2
+sw x13, -204(x14)
+addi x15, x15, 1
+jump2: addi x14, x0, 50
+bge x14, x15, jump1 
+addi x15, x0, -1
+sw x15, 216(x2)
+sw x15, 12(x2)
+addi x15, x0, 1
+jal x0, jump4 
+jump3: add x15, x0, x12
+jump4: addi x14, x0, 49
+blt x14, x15, jump5 
+addi x12, x15, 1
+slli x14, x12, 2
+addi x14, x14, 624
+add x14, x14, x2
+lw x13, -204(x14)
+slli x14, x15, 2
+addi x14, x14, 624
+add x14, x14, x2
+lw x14, -204(x14)
+xori x14, x14, -1
+add x13, x13, x14
+addi x11, x0, -1
+bge x13, x11, jump3 
+slli x15, x15, 2
+addi x15, x15, 624
+add x15, x15, x2
+sw x14, -204(x15)
+jal x0, jump3 
+jump5: lw x15, 620(x2)
+xori x15, x15, -1
+sw x15, 620(x2)
+addi x6, x0, 0
+jal x0, jump17 
+jump31: addi x16, x0, 1
+jump6: addi x15, x0, 50
+blt x15, x16, jump7 
+slli x15, x16, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x15, -204(x15)
+blt x15, x0, jump30 
+addi x16, x16, 1
+jal x0, jump6 
+jump7: add x16, x0, x6
+jump30: slli x15, x16, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x14, -204(x15)
+xori x14, x14, -1
+sw x14, -204(x15)
+addi x14, x0, 1
+jal x0, jump9 
+jump8: slli x15, x14, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x13, -204(x15)
+sw x13, -408(x15)
+addi x14, x14, 1
+jump9: bge x16, x14, jump8 
+jal x0, jump18 
+jump32: add x6, x0, x15
+jump10: blt x6, x16, jump23 
+slli x15, x6, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x14, -204(x15)
+xori x14, x14, -1
+sw x14, -204(x15)
+add x13, x0, x6
+add x11, x0, x6
+add x14, x0, x16
+jal x0, jump13 
+jump11: slli x15, x14, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x12, -408(x15)
+slli x15, x11, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x10, -204(x15)
+xori x15, x10, -1
+add x15, x12, x15
+addi x17, x0, -1
+blt x15, x17, jump14 
+jump12: slli x15, x13, 2
+addi x15, x15, 624
+add x15, x15, x2
+sw x12, -612(x15)
+addi x13, x13, -1
+addi x14, x14, -1
+jump13: bne x14, x0, jump11 
+bne x16, x11, jump11 
+addi x14, x0, 1
+jal x0, jump16 
+jump14: beq x16, x11, jump12 
+slli x15, x13, 2
+addi x15, x15, 624
+add x15, x15, x2
+sw x10, -612(x15)
+addi x13, x13, -1
+addi x11, x11, -1
+jal x0, jump13 
+jump15: slli x15, x14, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x13, -612(x15)
+sw x13, -408(x15)
+addi x14, x14, 1
+jump16: addi x15, x0, 50
+bge x15, x14, jump15 
+jump17: addi x15, x0, 50
+beq x6, x15, jump20 
+beq x6, x0, jump31 
+add x16, x0, x6
+jump18: addi x15, x16, 1
+jump19: addi x14, x0, 50
+blt x14, x15, jump10 
+slli x14, x15, 2
+addi x14, x14, 624
+add x14, x14, x2
+lw x14, -204(x14)
+blt x14, x0, jump32 
+addi x15, x15, 1
+jal x0, jump19 
+jump20: addi x14, x0, 1
+jal x0, jump22 
+jump21: slli x15, x14, 2
+addi x15, x15, 624
+add x15, x15, x2
+lw x13, -612(x15)
+sw x13, -204(x15)
+addi x14, x14, 1
+jump22: addi x15, x0, 50
+bge x15, x14, jump21 
+jump23: lw x1, 636(x2)
+addi x2, x2, 640
+jalr x0, 0(x1)
+jump27: add x6, x0, x10
+beq x12, x0, jump28
+jump29: sb x11, 0(x6)
+addi x12, x12, -1
+addi x6, x6, 1
+bne x12, x0, jump29
+jump28: jalr x0, 0(x1)
+jump24: jal x0, jump26 
+jump25: jal x1, jump0 
+addi x8, x8, 1
+jump26: lui x15, 1
+addi x15, x15, -1097 
+bge x15, x8, jump25 
