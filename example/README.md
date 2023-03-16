@@ -10,7 +10,7 @@ num | name | input0 |input | elf | source code| mem
 6 |loop unrolling2(ijuk) | O | X | O| O| O
 7 |natural merge sort | O | X | O| O| O
 
-[kite_result]
+[kite_result/ERROR(%)]
 num | name | input0 |input 
 ---- |---- | ---- | ---- 
 1 |multiplication | 24.6153 | X
