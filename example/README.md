@@ -13,10 +13,10 @@ num | name | input0 |input | elf | source code| mem
 [kite_result]
 num | name | input0 |input 
 ---- |---- | ---- | ---- 
-1 |multiplication | 226800004 | X
-2 |matirx multiplication1 | 148787208.6 | X
-3 |encryption | 182884807.2 | X
-4 |matirx multiplication2 | 188735745.4 | X 
-5 |loop unrolling1(iujk) | 180424881 | X 
-6 |loop unrolling2(ijuk) | 174336994 | X 
-7 |natural merge sort | 185010208.8 | X 
+1 |multiplication | 24.6153 | X
+2 |matirx multiplication1 | 9.5441 | X
+3 |encryption | 7.5160| X
+4 |matirx multiplication2 | 12.0871 | X 
+5 |loop unrolling1(iujk) | 9.5296 | X 
+6 |loop unrolling2(ijuk) | 7.8851 | X 
+7 |natural merge sort | 13.3286 | X 
