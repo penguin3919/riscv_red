@@ -1,0 +1,9 @@
+jal x0, jump1 
+jump0: slli x15, x8, 1
+add x8, x15, x8
+mul x15, x14, x8
+mul x9, x9, x15
+addi x14, x14, 1 
+jump1: lui x15, 3418
+addi x15, x15, -129
+bge x15, x14, jump0
