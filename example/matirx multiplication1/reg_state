@@ -1,0 +1,81 @@
+###########################################################
+# Kite: Architecture Simulator for RISC-V Instruction Set #
+# Developed by William J. Song                            #
+# Intelligent Computing Systems Lab, Yonsei University    #
+# Version: 1.9                                            #
+###########################################################
+
+# Kite register state
+#   1. Each line of state file defines "register name = data value".
+#   2. Register state defines 32 integer registers from x0 to x31,
+#      and 32 double-precision floating-point registers from f0 to f31.
+#   3. x0 register is hard-wired to zero. Any non-zero values written to x0
+#      register is discarded.
+
+# 64-bit integer registers
+x0 = 0
+x1 = 0
+x2 = 1992
+x3 = 0
+x4 = 0
+x5 = 0
+x6 = 0
+x7 = 7
+x8 = 7
+x9 = 2000
+x10 = 2196
+x11 = 2392
+x12 = 0
+x13 = 0
+x14 = 7
+x15 = 0
+x16 = 0
+x17 = 0
+x18 = 0
+x19 = 0
+x20 = 32
+x21 = 400
+x22 = 720
+x23 = 0
+x24 = 0
+x25 = 0
+x26 = 0
+x27 = 0
+x28 = 0
+x29 = 0
+x30 = 0
+x31 = 0
+
+# Double-precision floating-point registers
+f0 = 0
+f1 = 0.0
+f2 = 2.71828
+f3 = 3.14159265359
+f4 = 0.0
+f5 = 0.0
+f6 = 0.0
+f7 = 0.0
+f8 = 0.0
+f9 = 0.0
+f10 = -0.1
+f11 = 0.0
+f12 = 0.0 
+f13 = 0.0 
+f14 = 0.0 
+f15 = 0.0 
+f16 = 0.0 
+f17 = 0.0 
+f18 = 0.0 
+f19 = 0.0 
+f20 = 0.0 
+f21 = 0.0 
+f22 = 0.0 
+f23 = 0.0 
+f24 = 0.0 
+f25 = 0.0 
+f26 = 0.0 
+f27 = 0.0 
+f28 = 0.0 
+f29 = 0.0 
+f30 = 0.0 
+f31 = 0.0 
