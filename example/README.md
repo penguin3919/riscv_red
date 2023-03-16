@@ -1,8 +1,11 @@
 example list 
 
-number | example | code | elf | source code
+num | name | code | elf | source code
 ---- |---- | ---- | ---- | ----
-곰1 |다리 | 다리1 | 다리2 | 다리3
-곰1 |곰1 | 곰2 | 곰3 | 곰4
-곰1 |곰1 | 곰2 | 곰3 | 곰4
-곰1 |곰1 | 곰2 | 곰3 | 곰4
+1 |multiplication | X | X | X
+2 |matirx multiplication1 | X | X | X
+3 |encryption | X | X | X
+4 |matirx multiplication2 | X | X | X
+5 |loop unrolling1 | X | X | X
+6 |loop unrolling2 | X | X | X
+7 |natural merge sort | X | X | X
