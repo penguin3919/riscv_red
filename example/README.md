@@ -20,4 +20,5 @@ num | name | input0 |input(fin0)
 5 |loop unrolling1(iujk) | 9.5296 | 9.5951 
 6 |loop unrolling2(ijuk) | 7.8851 | 7.9131
 7 |natural merge sort | 13.3286 | X 
+
 Error: program size goes out of the code segment.
