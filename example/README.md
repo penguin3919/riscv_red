@@ -1,6 +1,6 @@
 [example list]
 
-num | name | input0 |input | elf | source code| mem
+num | name | input0 |input(fin0) | elf | source code| mem
 ---- |---- | ---- | ---- | ----| ----| ----
 1 |multiplication | O | X| O | O| O
 2 |matirx multiplication1 | O | X| O | O| O
@@ -11,7 +11,7 @@ num | name | input0 |input | elf | source code| mem
 7 |natural merge sort | O | X | O| O| O
 
 [kite_result/ERROR(%)]
-num | name | input0 |input 
+num | name | input0 |input(fin0)
 ---- |---- | ---- | ---- 
 1 |multiplication | 24.6153 | X
 2 |matirx multiplication1 | 9.5441 | X
