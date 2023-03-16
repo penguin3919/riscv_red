@@ -1,6 +1,6 @@
 example list 
 
-num | name | code | elf | source code
+num | name | input | elf | source code
 ---- |---- | ---- | ---- | ----
 1 |multiplication | X | X | X
 2 |matirx multiplication1 | X | X | X
