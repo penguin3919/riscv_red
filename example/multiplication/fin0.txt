@@ -1,0 +1,51 @@
+jal x0, jump00
+jump1: addi x2, x2, -96
+jump2: sw x1, 92(x2)
+jump3: sw x8, 88(x2)
+jump4: sw x9, 84(x2)
+jump5: sw x18, 80(x2)
+jump6: sw x19, 76(x2)
+jump7: sw x20, 72(x2)
+jump8: sw x21, 68(x2)
+jump9: sw x22, 64(x2)
+jump10: sw x23, 60(x2)
+jump11: sw x0, 28(x2)
+jump12: sw x0, 32(x2)
+jump13: sw x0, 36(x2)
+jump14: sw x0, 40(x2)
+jump15: sw x0, 44(x2)
+jump16: sw x0, 8(x2)
+jump17: sw x0, 12(x2)
+jump18: sw x0, 16(x2)
+jump19: sw x0, 20(x2)
+jump20: sw x0, 24(x2)
+jump21: jal x1, jump00
+jump22: jal x1, jump00
+jump23: addi x18, x10, 0
+jump24: jal x1, jump00
+jump25: bne x10, x0, jump00
+jump26: addi x19, x10, 0
+jump27: addi x21, x10, 0
+jump28: jal x0, jump00
+jump29: addi x11, x0, 0
+jump30: addi x10, x18, 0
+jump31: jal x1, jump00
+jump32: addi x11, x0, 0
+jump33: addi x10, x18, 0
+jump34: jal x1, jump00
+jump35: addi x11, x0, 0
+jump36: addi x10, x18, 0
+jump37: jal x1, jump00
+jump00: addi x23, x10, 0
+jump39: addi x14, x19, 0
+jump40: jal x0, jump46
+jump41: slli x15, x8, 1
+jump42: add x8, x15, x8
+jump43: mul x15, x14, x8
+jump44: mul x9, x9, x15
+jump45: addi x14, x14, 1
+jump46: lui x15, 3418
+jump47: addi x15, x15, -129
+jump48: bge x15, x14, jump41
+jump49: addi x11, x0, 0
+jump50: addi x10, x18, 0
