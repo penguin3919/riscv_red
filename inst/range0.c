@@ -10,6 +10,15 @@ short zero_set=0;
 short print_end=0;
 
 typedef struct {
+    unsigned int st_name;
+    unsigned int st_value;
+    unsigned int st_size;
+    unsigned char st_info;
+    unsigned char st_other;
+    unsigned short st_shndx;
+} symbolt;
+
+typedef struct {
     unsigned char ident[16];
     unsigned short type;
     unsigned short machine;
@@ -55,7 +64,7 @@ void text_to_4byte_inst(FILE* mid, unsigned char* ptr2,int size){
        
 }
 
-int readelf(FILE* pFile, unsigned char** text0,int* size)
+int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int* sym_size)
 {
     if(pFile == NULL)
     {
@@ -63,15 +72,28 @@ int readelf(FILE* pFile, unsigned char** text0,int* size)
     }
     else
     {
+
         elfHeader ehdr;
         int stroff=0;
         int strsize=0;
         int name;
         int temp=0;
+        int temp3=0;
+        int temp3_size=0;
         int goal=0;
+        int goal2=0;
+        int goal3=0;
         int goaloff=0;
+        int goaloff2=0;
         int goalsize=0;
-        
+        int sym_count=2;
+
+        int num3=0;//number of symbol
+        symbolt symbols;
+        int main_addr=0;
+        int text_addr=0;
+        int counter_addr=0;
+
         fseek(pFile,0,SEEK_SET);
         fread(&ehdr,52,1,pFile);
         
@@ -79,6 +101,7 @@ int readelf(FILE* pFile, unsigned char** text0,int* size)
         
         fseek(pFile,temp,SEEK_SET);
         fread(&stroff,4,1,pFile);
+        printf("strtab, stroff: %p\n",stroff);
         
         fseek(pFile,temp+4,SEEK_SET);
         fread(&strsize,4,1,pFile);
@@ -86,22 +109,38 @@ int readelf(FILE* pFile, unsigned char** text0,int* size)
         char* strtab=(char*)malloc(strsize);
         fseek(pFile,stroff,SEEK_SET);
         fread(strtab,1,strsize,pFile);
-
+        
         for(int i=0;i<ehdr.shnum;i++)
         {
             fseek(pFile,ehdr.shoff+(i*ehdr.shentsize),SEEK_SET);
             fread(&name,4,1,pFile);
-            if(!strncmp(strtab+name,".text",5))
+            if((goal==0)&&(!strncmp(strtab+name,".text",5)))
             {
                 goal=i;
+                //break;
+            }
+
+            if((goal!=0)&&(!strncmp(strtab+name,".symtab",7)))
+            {
+                goal2=i;
+                //break;
+            }
+            if((goal!=0)&&(!strncmp(strtab+name,".strtab",7)))
+            {
+                goal3=i;
                 break;
             }
         }
-        
+       //read .text  
         temp=ehdr.shoff+(goal*ehdr.shentsize)+16;
         
         fseek(pFile,temp,SEEK_SET);
         fread(&goaloff,4,1,pFile);
+        printf("text off: %p\n",goaloff);
+        
+        fseek(pFile,temp-4,SEEK_SET);
+        fread(&text_addr,4,1,pFile);
+        //printf("text addr: %p\n",text_addr);
         
         fseek(pFile,temp+4,SEEK_SET);
         fread(&goalsize,4,1,pFile);
@@ -109,8 +148,78 @@ int readelf(FILE* pFile, unsigned char** text0,int* size)
         *text0=(unsigned char*)malloc(goalsize);
         fseek(pFile,goaloff,SEEK_SET);
         fread(*text0,1,goalsize,pFile);
+
+       //read .symtab
+        temp=ehdr.shoff+(goal2*ehdr.shentsize)+16;
+        
+        fseek(pFile,temp,SEEK_SET);
+        fread(&goaloff,4,1,pFile);
+        printf("symtab addr: %p\n",goaloff);
+        
+        fseek(pFile,temp+4,SEEK_SET);
+        fread(&goalsize,4,1,pFile);
+        // *size=goalsize;
+        // *text0=(unsigned char*)malloc(goalsize);
+        //fseek(pFile,goaloff,SEEK_SET);
+        //fread(*text0,1,goalsize,pFile);
+        
+       //read .strtab
+        temp3=ehdr.shoff+(goal3*ehdr.shentsize)+16;
+        fseek(pFile,temp3,SEEK_SET);
+        fread(&goaloff2,4,1,pFile);
+        printf("strtab2 addr: %p\n",goaloff2);
+       //printf("strtab: %s\n\n",temp3); 
+        fseek(pFile,temp3+4,SEEK_SET);
+        fread(&temp3_size,4,1,pFile);
+        
+        char* strtab2=(char*)malloc(temp3_size);
+        fseek(pFile,goaloff2,SEEK_SET);
+        fread(strtab2,1,temp3_size,pFile);
+       
+        //for(int ii=0;ii<temp3_size;ii++)
+        //{
+         //   printf("%c ",strtab2[ii]);
+        //}
+        //printf("\n\n");
+        *sym0=(unsigned int*)malloc((num3*2)+2);
+        *(*sym0)=text_addr;
+        //sym_count->init_val=2
+        num3=goalsize/sizeof(symbols);
+        printf("number of symbol: %d\n",num3); 
+        for(int i=0;i<num3;i++)
+        {
+            //temp=goaloff+(i*sizeof(symbols));
+            temp=goaloff+(i*sizeof(symbols));
+            fseek(pFile,temp,SEEK_SET);
+            fread(&symbols,sizeof(symbols),1,pFile);
+            //printf("%s %p %d %d %d %d\n",strtab2+symbols.st_name,symbols.st_value,symbols.st_size,symbols.st_info,symbols.st_other,symbols.st_shndx);
+            //if(!strncmp(strtab2+symbols.st_name,"main",4))
+            if(!strncmp(strtab2+symbols.st_name,"metal_hpm_read_counter",22))
+            {
+                *((*sym0)+1)=symbols.st_value;
+            }
+            else if((symbols.st_info&0xf)==2 && (symbols.st_info>>4)==1)
+            {
+                *((*sym0)+sym_count)=symbols.st_value;
+                *((*sym0)+sym_count+1)=symbols.st_size;
+                sym_count+=2;
+            }
+            
+        }
+        for(int i=0;i<num3*1;i+=2)
+        {
+            if(i==0){
+                printf("%d: %x %x\n",i,*((*sym0)+i),*((*sym0)+i+1));
+                continue;
+            } 
+            printf("%d: %x %d\n",i,*((*sym0)+i),*((*sym0)+i+1));
+        }
+
+        printf("main addr: %x\n",symbols.st_value);
+        printf("main addr: %s\n",strtab2+symbols.st_name);
         free(strtab);
     } 
+    
         return 0;
 }
 
@@ -375,25 +484,29 @@ int main(){
 
     int read=0;
     int read_size=0;
+    int sym_size=0;
     unsigned char* text=NULL;
+    unsigned int* sym=NULL;
     FILE* ppFile=NULL;
-    FILE* midFile=NULL;
 
     char aa[9];
     char temp2[20];
     int a=0;
     int length=0;
     int i=0;
-    FILE* endFile=NULL;
-    
-    FILE* mid2File=NULL;
     int max=0;
-
-    FILE* endend0=NULL;
+    
+  /*  FILE* endFile=NULL;
+    FILE* midFile=NULL;
+    FILE* mid2File=NULL;
+    FILE* endend0=NULL;*/
 //inst3.c
    ppFile = fopen("example-hpm.elf","rb");
-   midFile=fopen("mid.txt","w");
-   read=readelf(ppFile,&text,&read_size);
+//   midFile=fopen("mid.txt","w");
+//   add sym, sym_size ++symbol table
+   read=readelf(ppFile,&text,&read_size,&sym,&sym_size);
+  
+/* 03/27 elf read version 2 test 
    if(read == 0)
    {
        text_to_4byte_inst(midFile,text,read_size);
@@ -433,11 +546,13 @@ int main(){
   
     
     free(text);
-    fclose(ppFile);
     fclose(endFile);
     fclose(endend0);
+ 03/27 elf read version 2 test */
+    fclose(ppFile);
 //printf("link, freq: %d, %d\n",b_link,b_freq);
 //printf("lines: %d\n",i);
 //printf("line0: %d\n",line0);
     return 0;
 }
+
