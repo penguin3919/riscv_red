@@ -6,8 +6,13 @@ int b_link=0;
 int link0=0;
 int b_freq=0;
 int line0=0;
+int max0=0;
+
 short zero_set=0;
+short mid_end=0;
+short mid_freq=0;
 short print_end=0;
+int print_size=0;
 
 typedef struct {
     unsigned int st_name;
@@ -36,8 +41,6 @@ typedef struct {
 } elfHeader;
 
 void text_to_4byte_inst(FILE* mid, unsigned char* ptr2,int size){
-    //int first=9;
-    //int last=strlen(ptr2)-4;
     int value=0;
     int hex=1;
     char temp[10];
@@ -48,13 +51,9 @@ void text_to_4byte_inst(FILE* mid, unsigned char* ptr2,int size){
        for(int iii=0;iii<4;iii++)
        {
            a=*(ptr2+ii+iii);
-           //value+=hex*(a-48+(~((a-58)>>7)*7));
            value+=hex*a;
            hex<<=8;
        }
-       //printf("%x\n",value);
-       //printf("inst: %d\n",result0(value));
-   //printf("wow\n");
        sprintf(temp,"%08x\n",value);
        fwrite(temp,1,9,mid);
        value=0;
@@ -86,7 +85,7 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
         int goaloff=0;
         int goaloff2=0;
         int goalsize=0;
-        int sym_count=2;
+        int sym_count=3;
 
         int num3=0;//number of symbol
         symbolt symbols;
@@ -101,7 +100,6 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
         
         fseek(pFile,temp,SEEK_SET);
         fread(&stroff,4,1,pFile);
-        printf("strtab, stroff: %p\n",stroff);
         
         fseek(pFile,temp+4,SEEK_SET);
         fread(&strsize,4,1,pFile);
@@ -117,13 +115,11 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
             if((goal==0)&&(!strncmp(strtab+name,".text",5)))
             {
                 goal=i;
-                //break;
             }
 
             if((goal!=0)&&(!strncmp(strtab+name,".symtab",7)))
             {
                 goal2=i;
-                //break;
             }
             if((goal!=0)&&(!strncmp(strtab+name,".strtab",7)))
             {
@@ -136,11 +132,9 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
         
         fseek(pFile,temp,SEEK_SET);
         fread(&goaloff,4,1,pFile);
-        printf("text off: %p\n",goaloff);
         
         fseek(pFile,temp-4,SEEK_SET);
         fread(&text_addr,4,1,pFile);
-        //printf("text addr: %p\n",text_addr);
         
         fseek(pFile,temp+4,SEEK_SET);
         fread(&goalsize,4,1,pFile);
@@ -154,21 +148,14 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
         
         fseek(pFile,temp,SEEK_SET);
         fread(&goaloff,4,1,pFile);
-        printf("symtab addr: %p\n",goaloff);
         
         fseek(pFile,temp+4,SEEK_SET);
         fread(&goalsize,4,1,pFile);
-        // *size=goalsize;
-        // *text0=(unsigned char*)malloc(goalsize);
-        //fseek(pFile,goaloff,SEEK_SET);
-        //fread(*text0,1,goalsize,pFile);
         
        //read .strtab
         temp3=ehdr.shoff+(goal3*ehdr.shentsize)+16;
         fseek(pFile,temp3,SEEK_SET);
         fread(&goaloff2,4,1,pFile);
-        printf("strtab2 addr: %p\n",goaloff2);
-       //printf("strtab: %s\n\n",temp3); 
         fseek(pFile,temp3+4,SEEK_SET);
         fread(&temp3_size,4,1,pFile);
         
@@ -176,54 +163,42 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
         fseek(pFile,goaloff2,SEEK_SET);
         fread(strtab2,1,temp3_size,pFile);
        
-        //for(int ii=0;ii<temp3_size;ii++)
-        //{
-         //   printf("%c ",strtab2[ii]);
-        //}
-        //printf("\n\n");
         *sym0=(unsigned int*)malloc((num3*2)+2);
-        *(*sym0)=text_addr;
-        //sym_count->init_val=2
+
+        //sym_count->init_val=3
         num3=goalsize/sizeof(symbols);
-        printf("number of symbol: %d\n",num3); 
+        *sym_size=num3;
         for(int i=0;i<num3;i++)
         {
-            //temp=goaloff+(i*sizeof(symbols));
             temp=goaloff+(i*sizeof(symbols));
             fseek(pFile,temp,SEEK_SET);
             fread(&symbols,sizeof(symbols),1,pFile);
-            //printf("%s %p %d %d %d %d\n",strtab2+symbols.st_name,symbols.st_value,symbols.st_size,symbols.st_info,symbols.st_other,symbols.st_shndx);
-            //if(!strncmp(strtab2+symbols.st_name,"main",4))
+            if(!strncmp(strtab2+symbols.st_name,"main",4))
+            {
+                *((*sym0))=((symbols.st_value-text_addr)/4)+1;
+                *((*sym0)+1)=symbols.st_size/4;
+            }
             if(!strncmp(strtab2+symbols.st_name,"metal_hpm_read_counter",22))
             {
-                *((*sym0)+1)=symbols.st_value;
+                *((*sym0)+2)=((symbols.st_value-text_addr)/4)+1;
             }
             else if((symbols.st_info&0xf)==2 && (symbols.st_info>>4)==1)
             {
-                *((*sym0)+sym_count)=symbols.st_value;
-                *((*sym0)+sym_count+1)=symbols.st_size;
+                *((*sym0)+sym_count)=((symbols.st_value-text_addr)/4)+1;
+                *((*sym0)+sym_count+1)=symbols.st_size/4;
                 sym_count+=2;
             }
             
         }
-        for(int i=0;i<num3*1;i+=2)
-        {
-            if(i==0){
-                printf("%d: %x %x\n",i,*((*sym0)+i),*((*sym0)+i+1));
-                continue;
-            } 
-            printf("%d: %x %d\n",i,*((*sym0)+i),*((*sym0)+i+1));
-        }
 
-        printf("main addr: %x\n",symbols.st_value);
-        printf("main addr: %s\n",strtab2+symbols.st_name);
         free(strtab);
     } 
     
         return 0;
 }
 
-void hex_to_instruction(FILE* mid2,int line, unsigned int inst2){
+//hex_to_instruction(mid2File,i,a,sym,sym_size);
+void hex_to_instruction(FILE* mid2,int line, unsigned int inst2, unsigned int* sym2,int sym2_size){
     short opcode=inst2&0x7f;
     short funct3=(inst2>>12)&0x7;
     short funct7=(inst2>>25)&0x7f;
@@ -268,11 +243,22 @@ void hex_to_instruction(FILE* mid2,int line, unsigned int inst2){
                 (((imm>>19)&0x1)<<19);
             imm=(imm<<12)>>12;
             jump0=line+1+(imm/2);
-            if(b_link==jump0) b_freq++;
-            if(zero_set==1 && link0==jump0) print_end=1;
+
+            if((jump0 >= max0) && (jump0!=*(sym2+2)) && (b_freq==2 || line<*(sym2)))
+            {
+                for(int m=3;m<sym2_size;m+=2)
+                {
+                    if(*(sym2+m)==jump0) 
+                    {
+                        max0=jump0+*(sym2+m+1);
+                    }
+                }
+            }
+
+            if(b_link==*(sym2+2)) b_freq++;
+            if(zero_set==1 && link0==jump0) mid_end=1;
             if(zero_set==0 && b_freq==2) 
             {
-                //print_end=1;
                 line0=line+1;
                 link0=jump0;
                 zero_set=1;
@@ -301,11 +287,22 @@ void hex_to_instruction(FILE* mid2,int line, unsigned int inst2){
             rs1=(inst2>>15)&0x1f;
             rs2=(inst2>>20)&0x1f;
             jump0=line+1+(imm/2);
-            if(b_link==jump0) b_freq++;
-            if(zero_set==1 && link0==jump0) print_end=1;
+
+            if((jump0 >= max0) && (jump0!=*(sym2+2)) && (b_freq==2 || line<*(sym2)))
+            {
+                for(int m=3;m<sym2_size;m+=2)
+                {
+                    if(*(sym2+m)==jump0)
+                    {
+                        max0=jump0+*(sym2+m+1);
+                    }
+                }
+            }
+
+            if(b_link==*(sym2+2)) b_freq++;
+            if(zero_set==1 && link0==jump0) mid_end=1;
             if(zero_set==0 && b_freq==2) 
             {
-                //print_end=1;
                 line0=line+1;
                 link0=jump0;
                 zero_set=1;
@@ -353,14 +350,20 @@ void hex_to_instruction(FILE* mid2,int line, unsigned int inst2){
             rs2=(inst2>>20)&0x1f;
             
     }
-    //printf("%d\n",opcode);
-    //printf("%s\n",inst3); //inst3
      
-    //if(b_freq==4) printf("b_link=%d, b_freq=%d\n",b_link,b_freq);
-   //print_instruction_start 
-
-    if(print_end!=1)
+    if(mid_end==1 && mid_freq==0) 
     {
+        sprintf(temp4,"jal x0, end00\n");
+    }
+
+    if(print_end==1)
+    {
+        sprintf(temp4,"end00: addi x0, x0, 0\n"); 
+    }
+
+    if(mid_end==0 && print_end!=1 && (b_freq==3 || line<*(sym2) || line>=(-1+*(sym2)+*(sym2+1))|| b_freq==2))
+    {
+    print_size++;
         if(line!=0 && line==line0)
             sprintf(temp3,"jump00:");
         else sprintf(temp3,"jump%d:",line+1);
@@ -395,16 +398,17 @@ void hex_to_instruction(FILE* mid2,int line, unsigned int inst2){
             break;
         default:
             sprintf(temp4,"%s no op found\n",temp3);
+        }
+    }
 
-    }
-    }
     fwrite(temp4,1,strlen(temp4),mid2);
-    //fwrite(temp2,1,strlen(temp2),mid2File);
-
-   //print_instruction_end
+    if(mid_end==1){
+        mid_freq++;
+     mid_end=0;
+     b_freq=0;
+    }
     return;
 }
-//int read23(unsigned char* ptr){
 int hex_to_dec(unsigned char* ptr){
     int hex=1;
     int sum=0;
@@ -416,7 +420,6 @@ int hex_to_dec(unsigned char* ptr){
         sum+=hex*temp;
         hex<<=4;
     }
-    //printf("%x\n",sum);
     return sum;
 }
 int delete_exceeded_label_range(FILE* ppFile0,FILE* endend,int max0)
@@ -435,7 +438,7 @@ int delete_exceeded_label_range(FILE* ppFile0,FILE* endend,int max0)
    int end0=0;
 
    //line: max0+1
-   for(m=0;m<max0+1;m++)
+   for(m=0;m<print_size+2;m++)
    {//1
    fgets(aa0,40,ppFile0);
    select0=0;
@@ -444,7 +447,6 @@ int delete_exceeded_label_range(FILE* ppFile0,FILE* endend,int max0)
    {
        if(!strncmp(aa0+i,strj,4))
        {
-           //printf("%d wow",strlen(aa0));
            start0=i+4;
            select0=1;
            break;
@@ -460,7 +462,6 @@ int delete_exceeded_label_range(FILE* ppFile0,FILE* endend,int max0)
        sum0+=ten0*(aa0[end0-i]-48);
        ten0*=10;
    }
-   //printf("hi sum0: %d\n",sum0);
 
    if(sum0>max0)
    {
@@ -470,12 +471,11 @@ int delete_exceeded_label_range(FILE* ppFile0,FILE* endend,int max0)
        aa0[start0+3]='\0';
        }
    }
-   //printf("%s\n",aa0);
    fwrite(aa0,1,strlen(aa0),endend);
    }//1
+   fgets(aa0,40,ppFile0);
+   fwrite(aa0,1,strlen(aa0),endend);
     
-   //printf("start0: %c\n",aa0[start0]);
-   //printf("end0: %c",aa0[strlen(aa0)-2]);
 
     return 0;
 }
@@ -496,63 +496,54 @@ int main(){
     int i=0;
     int max=0;
     
-  /*  FILE* endFile=NULL;
+    FILE* endFile=NULL;
     FILE* midFile=NULL;
     FILE* mid2File=NULL;
-    FILE* endend0=NULL;*/
+    FILE* endend0=NULL;
 //inst3.c
    ppFile = fopen("example-hpm.elf","rb");
-//   midFile=fopen("mid.txt","w");
+   midFile=fopen("mid.txt","w");
 //   add sym, sym_size ++symbol table
    read=readelf(ppFile,&text,&read_size,&sym,&sym_size);
   
-/* 03/27 elf read version 2 test 
    if(read == 0)
    {
        text_to_4byte_inst(midFile,text,read_size);
    }
    fclose(midFile);
-//range0.c
     endFile=fopen("mid.txt","r");
 
     fseek(endFile,0,SEEK_END);
     length=ftell(endFile)/9;
     fseek(endFile,0,SEEK_SET);
-    //printf("size: %d\n",length);
     mid2File=fopen("mid2.txt","w");
     sprintf(temp2,"jal x0, jump00\n");
-    //printf("sizeof:temp2: %d\n",strlen(temp2));
     fwrite(temp2,1,strlen(temp2),mid2File);
-    
-    for(i=0;i<length;i++) 
+    max0=sym[0]+sym[1];
+
+    for(i=0;i<max0;i++) 
     {
-    if(print_end==1) break;
     fread(aa,9,1,endFile);
     if(aa!=NULL)
-    {
+     {
     a=hex_to_dec(aa);
-    //printf("%s\n",argv[1]);
-    //printf("a: %x\n",a);
-    hex_to_instruction(mid2File,i,a);
+    if(i==max0-1) print_end=1;
+    hex_to_instruction(mid2File,i,a,sym,sym_size);
+     }
     }
-    }
+
     fclose(mid2File);
     fclose(endFile);
 
     endFile=fopen("mid2.txt","r");
-    endend0=fopen("fin0.txt","w");
-    max=i-1;
+    endend0=fopen("fin3.txt","w");
+    max=max0-1;
     max=delete_exceeded_label_range(endFile,endend0,max);
-  
     
     free(text);
     fclose(endFile);
     fclose(endend0);
- 03/27 elf read version 2 test */
     fclose(ppFile);
-//printf("link, freq: %d, %d\n",b_link,b_freq);
-//printf("lines: %d\n",i);
-//printf("line0: %d\n",line0);
     return 0;
 }
 
