@@ -1,0 +1,89 @@
+jal x0, jump00
+jump1: lw x12, 0(x10)
+jump2: lw x13, 4(x10)
+jump3: addi x17, x0, 0
+jump4: addi x11, x0, 0
+jump5: jal x0, jump31
+jump6: lui x15, 648056
+jump7: addi x15, x15, -1607
+jump8: add x11, x11, x15
+jump9: slli x15, x13, 4
+jump10: addi x14, x3, -1844
+jump11: lw x16, 0(x14)
+jump12: add x15, x15, x16
+jump13: add x16, x13, x11
+jump14: xor x15, x15, x16
+jump15: srli x16, x13, 5
+jump16: lw x6, 4(x14)
+jump17: add x16, x16, x6
+jump18: xor x15, x15, x16
+jump19: add x12, x12, x15
+jump20: slli x15, x12, 4
+jump21: lw x16, 8(x14)
+jump22: add x15, x15, x16
+jump23: add x16, x11, x12
+jump24: xor x15, x15, x16
+jump25: srli x16, x12, 5
+jump26: lw x14, 12(x14)
+jump27: add x14, x16, x14
+jump28: xor x15, x15, x14
+jump29: add x13, x13, x15
+jump30: addi x17, x17, 1
+jump31: addi x15, x0, 31
+jump32: bge x15, x17, jump6
+jump33: sw x12, 0(x10)
+jump34: sw x13, 4(x10)
+jump35: jalr x0, 0(x1)
+jump36: lw x12, 0(x10)
+jump37: lw x13, 4(x10)
+jump38: addi x17, x0, 0
+jump39: lui x11, 814835
+jump40: addi x11, x11, 1824
+jump41: jal x0, jump67
+jump42: slli x15, x12, 4
+jump43: addi x14, x3, -1844
+jump44: lw x16, 8(x14)
+jump45: add x15, x15, x16
+jump46: add x16, x12, x11
+jump47: xor x15, x15, x16
+jump48: srli x16, x12, 5
+jump49: lw x6, 12(x14)
+jump50: add x16, x16, x6
+jump51: xor x15, x15, x16
+jump52: sub x13, x13, x15
+jump53: slli x15, x13, 4
+jump54: lw x16, 0(x14)
+jump55: add x15, x15, x16
+jump56: add x16, x11, x13
+jump57: xor x15, x15, x16
+jump58: srli x16, x13, 5
+jump59: lw x14, 4(x14)
+jump60: add x14, x16, x14
+jump61: xor x15, x15, x14
+jump62: sub x12, x12, x15
+jump63: lui x15, 400520
+jump64: addi x15, x15, 1607
+jump65: add x11, x11, x15
+jump66: addi x17, x17, 1
+jump67: addi x15, x0, 31
+jump68: bge x15, x17, jump42
+jump69: sw x12, 0(x10)
+jump70: sw x13, 4(x10)
+jump71: jalr x0, 0(x1)
+jump72: addi x2, x2, -80
+jump110: jal x1, jump00
+jump00: addi x22, x10, 0
+jump112: addi x8, x18, 0
+jump113: jal x0, jump119
+jump114: addi x10, x2, 40
+jump115: jal x1, jump1
+jump116: addi x10, x2, 40
+jump117: jal x1, jump36
+jump118: addi x8, x8, 1
+jump119: lui x15, 21
+jump120: addi x15, x15, -2017
+jump121: bge x15, x8, jump114
+jump122: addi x11, x0, 0
+jump123: addi x10, x9, 0
+jal x0, end00
+end00: addi x0, x0, 0
