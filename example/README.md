@@ -13,12 +13,12 @@ num | name | input0 |input(fin0)|input(fin3) | elf | source code| mem
 [kite_result/ERROR(%)]
 num | name | input0 |input(fin0)|input(fin3)
 ---- |---- | ---- | ----  | ---- 
-1 |multiplication | 24.6153 | 24.6153|
-2 |matirx multiplication1 | 9.5441 | 8.8649|
-3 |encryption | 7.5160| 7.5160|
-4 |matirx multiplication2 | 12.0871 | 12.1212 |
-5 |loop unrolling1(iujk) | 9.5296 | 9.5951 |
-6 |loop unrolling2(ijuk) | 7.8851 | 7.9131|
-7 |natural merge sort | 13.3286 | X |
+1 |multiplication | 24.6153 | 24.6153|24.6153
+2 |matirx multiplication1 | 9.5441 | 8.8649| 8.8649
+3 |encryption | 7.5160| 7.5160|7.5160
+4 |matirx multiplication2 | 12.0871 | 12.1212 |12.1212
+5 |loop unrolling1(iujk) | 9.5296 | 9.5951 |9.5951
+6 |loop unrolling2(ijuk) | 7.8851 | 7.9131|7.9131
+7 |natural merge sort | 13.3286 | X |13.4421
 
 Error: program size goes out of the code segment.
