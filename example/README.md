@@ -11,7 +11,7 @@ num | name | input0 |input(fin0)|input(fin3) | elf | source code| mem
 7 |natural merge sort | O |O | O| O| O| O
 
 [kite_result/ERROR(%)]
-num | name | input0 |input(fin0)|input(fin0)
+num | name | input0 |input(fin0)|input(fin3)
 ---- |---- | ---- | ----  | ---- 
 1 |multiplication | 24.6153 | 24.6153|
 2 |matirx multiplication1 | 9.5441 | 8.8649|
