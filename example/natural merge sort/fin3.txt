@@ -1,0 +1,182 @@
+jal x0, jump00
+jump1: addi x2, x2, -640
+jump2: sw x1, 636(x2)
+jump3: addi x12, x0, 204
+jump4: addi x11, x0, 0
+jump5: addi x10, x2, 420
+jump6: jal x1, jump290
+jump7: addi x12, x0, 204
+jump8: addi x11, x0, 0
+jump9: addi x10, x2, 216
+jump10: jal x1, jump290
+jump11: addi x12, x0, 204
+jump12: addi x11, x0, 0
+jump13: addi x10, x2, 12
+jump14: jal x1, jump290
+jump15: addi x15, x0, 0
+jump16: jal x0, jump24
+jump17: addi x13, x0, 51
+jump18: sub x13, x13, x15
+jump19: slli x14, x15, 2
+jump20: addi x14, x14, 624
+jump21: add x14, x14, x2
+jump22: sw x13, -204(x14)
+jump23: addi x15, x15, 1
+jump24: addi x14, x0, 50
+jump25: bge x14, x15, jump17
+jump26: addi x15, x0, -1
+jump27: sw x15, 216(x2)
+jump28: sw x15, 12(x2)
+jump29: addi x15, x0, 1
+jump30: jal x0, jump32
+jump31: addi x15, x12, 0
+jump32: addi x14, x0, 49
+jump33: blt x14, x15, jump52
+jump34: addi x12, x15, 1
+jump35: slli x14, x12, 2
+jump36: addi x14, x14, 624
+jump37: add x14, x14, x2
+jump38: lw x13, -204(x14)
+jump39: slli x14, x15, 2
+jump40: addi x14, x14, 624
+jump41: add x14, x14, x2
+jump42: lw x14, -204(x14)
+jump43: xori x14, x14, -1
+jump44: add x13, x13, x14
+jump45: addi x11, x0, -1
+jump46: bge x13, x11, jump31
+jump47: slli x15, x15, 2
+jump48: addi x15, x15, 624
+jump49: add x15, x15, x2
+jump50: sw x14, -204(x15)
+jump51: jal x0, jump31
+jump52: lw x15, 620(x2)
+jump53: xori x15, x15, -1
+jump54: sw x15, 620(x2)
+jump55: addi x6, x0, 0
+jump56: jal x0, jump134
+jump57: addi x16, x0, 1
+jump58: addi x15, x0, 50
+jump59: blt x15, x16, jump67
+jump60: slli x15, x16, 2
+jump61: addi x15, x15, 624
+jump62: add x15, x15, x2
+jump63: lw x15, -204(x15)
+jump64: blt x15, x0, jump68
+jump65: addi x16, x16, 1
+jump66: jal x0, jump58
+jump67: addi x16, x6, 0
+jump68: slli x15, x16, 2
+jump69: addi x15, x15, 624
+jump70: add x15, x15, x2
+jump71: lw x14, -204(x15)
+jump72: xori x14, x14, -1
+jump73: sw x14, -204(x15)
+jump74: addi x14, x0, 1
+jump75: jal x0, jump82
+jump76: slli x15, x14, 2
+jump77: addi x15, x15, 624
+jump78: add x15, x15, x2
+jump79: lw x13, -204(x15)
+jump80: sw x13, -408(x15)
+jump81: addi x14, x14, 1
+jump82: bge x16, x14, jump76
+jump83: jal x0, jump138
+jump84: addi x6, x15, 0
+jump85: blt x6, x16, jump158
+jump86: slli x15, x6, 2
+jump87: addi x15, x15, 624
+jump88: add x15, x15, x2
+jump89: lw x14, -204(x15)
+jump90: xori x14, x14, -1
+jump91: sw x14, -204(x15)
+jump92: addi x13, x6, 0
+jump93: addi x11, x6, 0
+jump94: addi x14, x16, 0
+jump95: jal x0, jump114
+jump96: slli x15, x14, 2
+jump97: addi x15, x15, 624
+jump98: add x15, x15, x2
+jump99: lw x12, -408(x15)
+jump100: slli x15, x11, 2
+jump101: addi x15, x15, 624
+jump102: add x15, x15, x2
+jump103: lw x10, -204(x15)
+jump104: xori x15, x10, -1
+jump105: add x15, x12, x15
+jump106: addi x17, x0, -1
+jump107: blt x15, x17, jump118
+jump108: slli x15, x13, 2
+jump109: addi x15, x15, 624
+jump110: add x15, x15, x2
+jump111: sw x12, -612(x15)
+jump112: addi x13, x13, -1
+jump113: addi x14, x14, -1
+jump114: bne x14, x0, jump96
+jump115: bne x16, x11, jump96
+jump116: addi x14, x0, 1
+jump117: jal x0, jump132
+jump118: beq x16, x11, jump108
+jump119: slli x15, x13, 2
+jump120: addi x15, x15, 624
+jump121: add x15, x15, x2
+jump122: sw x10, -612(x15)
+jump123: addi x13, x13, -1
+jump124: addi x11, x11, -1
+jump125: jal x0, jump114
+jump126: slli x15, x14, 2
+jump127: addi x15, x15, 624
+jump128: add x15, x15, x2
+jump129: lw x13, -612(x15)
+jump130: sw x13, -408(x15)
+jump131: addi x14, x14, 1
+jump132: addi x15, x0, 50
+jump133: bge x15, x14, jump126
+jump134: addi x15, x0, 50
+jump135: beq x6, x15, jump148
+jump136: beq x6, x0, jump57
+jump137: addi x16, x6, 0
+jump138: addi x15, x16, 1
+jump139: addi x14, x0, 50
+jump140: blt x14, x15, jump85
+jump141: slli x14, x15, 2
+jump142: addi x14, x14, 624
+jump143: add x14, x14, x2
+jump144: lw x14, -204(x14)
+jump145: blt x14, x0, jump84
+jump146: addi x15, x15, 1
+jump147: jal x0, jump139
+jump148: addi x14, x0, 1
+jump149: jal x0, jump156
+jump150: slli x15, x14, 2
+jump151: addi x15, x15, 624
+jump152: add x15, x15, x2
+jump153: lw x13, -612(x15)
+jump154: sw x13, -204(x15)
+jump155: addi x14, x14, 1
+jump156: addi x15, x0, 50
+jump157: bge x15, x14, jump150
+jump158: lw x1, 636(x2)
+jump159: addi x2, x2, 640
+jump160: jalr x0, 0(x1)
+jump161: addi x2, x2, -80
+jump196: jal x1, jump00
+jump00: addi x22, x10, 0
+jump198: addi x8, x18, 0
+jump199: jal x0, jump202
+jump200: jal x1, jump1
+jump201: addi x8, x8, 1
+jump202: lui x15, 1
+jump203: addi x15, x15, -1097
+jump204: bge x15, x8, jump200
+jump205: addi x11, x0, 0
+jump206: addi x10, x9, 0
+jal x0, end00
+jump290: addi x6, x10, 0
+jump291: beq x12, x0, jump296
+jump292: sb x11, 0(x6)
+jump293: addi x12, x12, -1
+jump294: addi x6, x6, 1
+jump295: bne x12, x0, jump292
+jump296: jalr x0, 0(x1)
+end00: addi x0, x0, 0
