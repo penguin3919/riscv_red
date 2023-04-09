@@ -1,0 +1,18 @@
+jal x0, jump00
+jump1: addi x2, x2, -96
+jump37: jal x1, jump00
+jump00: addi x23, x10, 0
+jump39: addi x14, x19, 0
+jump40: jal x0, jump46
+jump41: slli x15, x8, 1
+jump42: add x8, x15, x8
+jump43: mul x15, x14, x8
+jump44: mul x9, x9, x15
+jump45: addi x14, x14, 1
+jump46: lui x15, 3418
+jump47: addi x15, x15, -129
+jump48: bge x15, x14, jump41
+jump49: addi x11, x0, 0
+jump50: addi x10, x18, 0
+jal x0, end00
+end00: addi x0, x0, 0
