@@ -162,9 +162,11 @@ void data_memory_t::print_state() const {
     for(uint64_t i = 0; i < num_dwords; i++) {
         if(accessed[i]) {
             cout << "(" << (i<<3) << ") = ";
+            cout << memory[i] << endl; 
+            //if(i==145) cout <<"wow"<<read_fp(memory[i]) << endl; 
             // If exponent field bits are non-zero, it is assumed to be fp.
-            if(memory[i] & (uint64_t(0x7ff) << 52)) { cout << read_fp(memory[i]) << endl; }
-            else { cout << memory[i] << endl; }
+            //if(memory[i] & (uint64_t(0x7ff) << 52)) { cout << read_fp(memory[i]) << endl; }
+            //else { cout << memory[i] << endl; }
         }
     }
 }
