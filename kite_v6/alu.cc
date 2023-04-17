@@ -53,19 +53,19 @@ void alu_t::run(inst_t *m_inst) {
                         m_inst->rd_val = m_inst->rs1_val / (divide_by_zero ?
                                          1 : m_inst->rs2_val); break; }
         case op_divu: { divide_by_zero = (m_inst->rs2_val == 0);
-                        m_inst->rd_val = uint64_t(m_inst->rs1_val) / (divide_by_zero ?
-                                         1 : uint64_t(m_inst->rs2_val)); break; }
+                        m_inst->rd_val = uint32_t(m_inst->rs1_val) / (divide_by_zero ?
+                                         1 : uint32_t(m_inst->rs2_val)); break; }
         case op_mul:  { m_inst->rd_val = m_inst->rs1_val * m_inst->rs2_val; break; }
         case op_or:   { m_inst->rd_val = m_inst->rs1_val | m_inst->rs2_val; break; }
         case op_rem:  { divide_by_zero = (m_inst->rs2_val == 0);
                         m_inst->rd_val = m_inst->rs1_val % (divide_by_zero ?
                                          1 : m_inst->rs2_val); break; }
         case op_remu: { divide_by_zero = (m_inst->rs2_val == 0);
-                        m_inst->rd_val = uint64_t(m_inst->rs1_val) % (divide_by_zero ?
-                                         1 : uint64_t(m_inst->rs2_val)); break; }
+                        m_inst->rd_val = uint32_t(m_inst->rs1_val) % (divide_by_zero ?
+                                         1 : uint32_t(m_inst->rs2_val)); break; }
         case op_sll:  { m_inst->rd_val = m_inst->rs1_val << m_inst->rs2_val; break; }
         case op_sra:  { m_inst->rd_val = m_inst->rs1_val >> m_inst->rs2_val; break; }
-        case op_srl:  { m_inst->rd_val = uint64_t(m_inst->rs1_val) >> m_inst->rs2_val; break; }
+        case op_srl:  { m_inst->rd_val = uint32_t(m_inst->rs1_val) >> m_inst->rs2_val; break; }
         case op_sub:  { m_inst->rd_val = m_inst->rs1_val - m_inst->rs2_val; break; }
         case op_xor:  { m_inst->rd_val = m_inst->rs1_val ^ m_inst->rs2_val; break; }
         case op_addi: { m_inst->rd_val = m_inst->rs1_val + m_inst->imm; break; }
@@ -73,7 +73,7 @@ void alu_t::run(inst_t *m_inst) {
         case op_jalr: { m_inst->rd_val = m_inst->pc + 4; break; }
         case op_slli: { m_inst->rd_val = m_inst->rs1_val << m_inst->imm; break; }
         case op_srai: { m_inst->rd_val = m_inst->rs1_val >> m_inst->imm; break; }
-        case op_srli: { m_inst->rd_val = uint64_t(m_inst->rs1_val) >> m_inst->imm; break; }
+        case op_srli: { m_inst->rd_val = uint32_t(m_inst->rs1_val) >> m_inst->imm; break; }
         case op_ori:  { m_inst->rd_val = m_inst->rs1_val | m_inst->imm; break; }
         case op_xori: { m_inst->rd_val = m_inst->rs1_val ^ m_inst->imm; break; }
         case op_lb:
