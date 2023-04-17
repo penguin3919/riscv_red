@@ -113,7 +113,8 @@ void data_cache_t::read(inst_t *m_inst) {
         // Update the last access time.
         block->last_access = *ticks;
         // Load data as int or fp.
-        int64_t *data = &m_inst->rd_val;
+        //int64_t *data = &m_inst->rd_val;
+        int32_t *data = &m_inst->rd_val;
         // Read the right-sized data out of the cache block.
         *data = 0;
         memcpy(data, ((uint8_t*)block->data) + (addr & block_mask), data_size);
