@@ -14,8 +14,10 @@ public:
     uint64_t pc;                        // Program counter
     kite_opcode op;                     // Instruction operation
     int rd_num, rs1_num, rs2_num;       // Register operand indices
-    int64_t rd_val, rs1_val, rs2_val;   // Register operand values
-    int64_t imm;                        // Immediate
+    //int64_t rd_val, rs1_val, rs2_val;   // Register operand values
+    int32_t rd_val, rs1_val, rs2_val;   // Register operand values
+    //int64_t imm;                        // Immediate
+    int32_t imm;                        // Immediate
     std::string label;                  // Label
     uint64_t memory_addr;               // Data memory address
     unsigned alu_latency;               // ALU latency
