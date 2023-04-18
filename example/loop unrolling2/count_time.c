@@ -23,6 +23,7 @@ void IJUK(int a[LENA][LENA],int b[LENA][LENA],int c[LENA][LENA])
     {
   	  for(j=0;j<LENA;j++)
   	  {
+  		a[i][j]=0;
   		b[i][j]=1;
   		c[i][j]=1;
   	  }
