@@ -22,3 +22,5 @@ num | name | input0 |input(fin0)|input(fin3)
 7 |natural merge sort | 13.3286 | X |13.4421
 
 fin0, natural merge sort X: "Error: program size goes out of the code segment."
+	
+![image](https://user-images.githubusercontent.com/76509344/232783197-da4d36bc-cb30-4ebc-9a1c-aab697f9d55a.png)
