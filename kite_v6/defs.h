@@ -394,7 +394,8 @@ static std::string kite_reg_str[num_kite_regs] __attribute__((unused)) = {
 static std::string numbers = "0123456789";
 
 // Code segment size
-#define code_segment_size 1024
+//#define code_segment_size 1024
+#define code_segment_size 4096
 
 // Minimum memory size
 #define min_memory_size   2048
