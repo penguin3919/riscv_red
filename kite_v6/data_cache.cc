@@ -29,6 +29,7 @@ data_cache_t::data_cache_t(uint64_t *m_ticks, uint64_t m_cache_size,
     while(!(val & 0b1)) {
         val = val >> 1; block_offset++;
         block_mask = (block_mask << 1) | 0b1;
+      //cout<<"block_mask"<<block_mask<<endl;
     }
     // Check if the block size is a multiple of doubleword.
     if((block_size & 0b111) || (val != 1)) {
