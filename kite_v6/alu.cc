@@ -77,16 +77,22 @@ void alu_t::run(inst_t *m_inst) {
         case op_ori:  { m_inst->rd_val = m_inst->rs1_val | m_inst->imm; break; }
         case op_xori: { m_inst->rd_val = m_inst->rs1_val ^ m_inst->imm; break; }
         case op_lb:
-        case op_lbu:
+        case op_lbu:  { m_inst->memory_addr = (unsigned)(m_inst->rs1_val) + m_inst->imm; 
+                        if((((m_inst->memory_addr)>>28)&0xf) == 2) {exit_ticks += 1770;}
+                          break; }
         case op_lh:
-        case op_lhu:
+        case op_lhu:  { m_inst->memory_addr = (unsigned)(m_inst->rs1_val) + m_inst->imm; 
+                        if((((m_inst->memory_addr)>>28)&0xf) == 2) {exit_ticks += 2100;}
+                          break; }
         case op_lw:
-        case op_lwu:
+        case op_lwu:  { m_inst->memory_addr = (unsigned)(m_inst->rs1_val) + m_inst->imm; 
+                        if((((m_inst->memory_addr)>>28)&0xf) == 2) {exit_ticks += 2769;}
+                          break; }
         case op_ld:  
         case op_sb:
         case op_sh:
         case op_sw:
-        case op_sd:   { m_inst->memory_addr = m_inst->rs1_val + m_inst->imm; break; }
+        case op_sd:   { m_inst->memory_addr = (unsigned)(m_inst->rs1_val) + m_inst->imm; break; }
         case op_beq:  { m_inst->branch_target = (m_inst->rs1_val == m_inst->rs2_val) ? 
                                                 (m_inst->pc + (m_inst->imm << 1)) :
                                                 (m_inst->pc + 4); break; }
