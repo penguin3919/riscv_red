@@ -1,4 +1,5 @@
 CXX=g++
+#OPT="-DDEBUG"
 OPT=
 CFLAG:=-g -Wall -O3 $(OPT) 
 
