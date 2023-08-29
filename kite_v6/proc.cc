@@ -23,7 +23,8 @@ proc_t::proc_t() :
     reg_file(0),
     alu(0),
     data_memory(0),
-    data_cache(0) {
+    flash_memory(0) {
+    //data_cache(0) {
 }
 
 proc_t::~proc_t() {
@@ -34,7 +35,8 @@ proc_t::~proc_t() {
     delete reg_file;
     delete alu;
     delete data_memory;
-    delete data_cache;
+    delete flash_memory;
+    //delete data_cache;
 }
 
 // Processor initialization
@@ -45,10 +47,11 @@ void proc_t::init(const char *m_program_code) {
     reg_file = new reg_file_t();                        // Create a register file.
     alu = new alu_t(&ticks);                            // Create an ALU.
 
-    data_memory = new data_memory_t(&ticks, 4096*1024, 1);   // Create a data memory.
-    data_cache = new data_cache_t(&ticks, 16*1024, 32, 2);  // Create a data cache.
-    data_memory->connect(data_cache);                   // Connect the memory to cache.
-    data_cache->connect(data_memory);                   // Connect the cache to memory.
+    data_memory = new data_memory_t(&ticks, 16*1024, 1,0);   // Create a data memory.
+    flash_memory = new data_memory_t(&ticks, 512*1024*1024, 1,1);   // Create a data memory.
+    //data_cache = new data_cache_t(&ticks, 16*1024, 32, 2);  // Create a data cache.
+    //data_memory->connect(data_cache);                   // Connect the memory to cache.
+    //data_cache->connect(data_memory);                   // Connect the cache to memory.
 }
 
 // Run the processor pipeline.
@@ -56,7 +59,7 @@ void proc_t::run() {
     cout << "Start running ..." << endl;
     while(!ticks || if_id_preg.read()  || id_ex_preg.read()  ||
                     ex_mem_preg.read() || mem_wb_preg.read() ||
-                    !alu->is_free()    || !data_cache->is_free()) {
+                    !alu->is_free()) {
         // Increment clock ticks.
         ticks++;
         // Process pipeline stages backwards.
@@ -123,21 +126,54 @@ void proc_t::writeback() {
 // Memory stage
 void proc_t::memory() {
     static inst_t *mem_inst = 0;
+    uint32_t temp_mem=0;
     // Memory stage makes a progress only if the MEM/WB pipeline register is free.
     if(mem_wb_preg.is_free()) {
         // An instruction is read from the EX/MEM pipeline register.
-        if(data_cache->is_free() && (mem_inst = ex_mem_preg.read())) {
+        mem_inst=ex_mem_preg.read();
+        if(mem_inst && 1) {
+            //cout<<(1 && mem_inst)<<" wow1"<<endl;
             // Remove the instruction from the EX/MEM pipeline register.
             ex_mem_preg.clear();
             // Access the data memory for a load or store.
-            if(is_op_load(mem_inst->op)) { data_cache->read(mem_inst); }
-            else if(is_op_store(mem_inst->op)) { data_cache->write(mem_inst); }
+            temp_mem = mem_inst->memory_addr;
+            temp_mem = (temp_mem>>28)&0xf;
+            
+            if(is_op_load(mem_inst->op)) {
+                //cout<<"addr:"<<temp_mem<<endl;
+                if(temp_mem==8) {
+                    mem_inst->memory_addr-=(unsigned)(8<<28);
+                    if(mem_inst->memory_addr<0)
+                    {
+                    cerr << "Error: memory address 0x"<<std::hex<<mem_inst->memory_addr<< " is out of bounds"<<endl;
+                    exit(1);
+                    }
+                    data_memory->read(mem_inst); }
+                else if(temp_mem==2) 
+                    { mem_inst->memory_addr-=(unsigned)(2<<28);
+                    if(mem_inst->memory_addr<0)
+                    {
+                    cerr << "Error: memory address 0x"<<std::hex<<mem_inst->memory_addr<< " is out of bounds"<<endl;
+                    exit(1);
+                    }
+                    flash_memory->read(mem_inst); }
+                else
+                {
+                    cerr << "Error: memory address 0x"<<std::hex<<mem_inst->memory_addr<< " is out of bounds"<<endl;
+                    exit(1);
+                }
+            }
+            else if(is_op_store(mem_inst->op) && temp_mem!=2) {
+                //data_memory->write(mem_inst); 
+                    mem_inst->memory_addr-=(unsigned)(8<<28);
+                    data_memory->write(mem_inst); }
+            
         }
+        if(mem_inst)
+        {
+        mem_wb_preg.write(mem_inst);
+        mem_inst=0;}
         // Data cache is done with the instruction.
-        if(!data_cache->run()) {
-            // Write the instruction in the MEM/WB pipeline register.
-            mem_wb_preg.write(mem_inst); mem_inst = 0;
-        }
     }
 #ifdef DEBUG
     inst_t *inst = mem_wb_preg.read();
@@ -274,11 +310,12 @@ void proc_t::print_stats() {
 #endif
     cout.precision(-1);
     // Print data cache stats.
-    data_cache->print_stats();
+    //data_cache->print_stats();
     // Print register file state.
     reg_file->print_state();
     // Print data memory state.
-    data_memory->print_state();
+    data_memory->print_state(0);
+    flash_memory->print_state(1);
     cout << endl << "======== [End of Pipeline Stats] =========" << endl;
     for(int i=0;i<45;i++)
     {
