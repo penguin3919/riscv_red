@@ -8,6 +8,7 @@ using namespace std;
 inst_memory_t::inst_memory_t(const char *m_program_code) {
     memory.reserve(100);                // Reserve space for instructions.
     load_program_code(m_program_code);  // Load a program code.
+    test0=0;
 }
 
 inst_memory_t::~inst_memory_t() {
@@ -16,8 +17,15 @@ inst_memory_t::~inst_memory_t() {
 // Read an instruction from memory.
 inst_t* inst_memory_t::read(uint64_t m_pc) {
     inst_t *inst = 0;
+//    int test0=0;
     // PC should be in units of 4 bytes.
     m_pc = m_pc >> 2;
+    //cout<<"pc: "<<m_pc<<endl;
+    
+    //if(m_pc==33){test0+=1;}
+        
+     //cout<<"test0"<<endl;
+    
     // PC = 0 is reserved as invalid.
     if(m_pc && (m_pc < memory.size())) { inst = new inst_t(memory[m_pc]); }
     return inst;
