@@ -45,7 +45,8 @@ private:
     reg_file_t *reg_file;                   // Register file
     alu_t *alu;                             // ALU
     data_memory_t *data_memory;             // Data memory
-    data_cache_t *data_cache;               // Data cache
+    data_memory_t *flash_memory;             // Flash memory
+    //data_cache_t *data_cache;               // Data cache
     pipe_reg_t if_id_preg, id_ex_preg;      // Pipeline registers
     pipe_reg_t ex_mem_preg, mem_wb_preg;
 };
