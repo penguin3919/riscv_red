@@ -15,6 +15,7 @@ public:
 
     inst_t* read(uint64_t m_pc);            // Read an instruction from memory.
     size_t num_insts() const;               // Get the total number of instructions in memory.
+    int test0;
 
 private:
     // Load a program code.
