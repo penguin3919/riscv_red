@@ -15,7 +15,7 @@
 # 64-bit integer registers
 x0 = 0
 x1 = 3
-x2 = 2040
+x2 = 2147484288
 x3 = 0
 x4 = 0
 x5 = 0
