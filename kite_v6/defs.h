@@ -18,7 +18,7 @@ enum kite_opcode {
     op_rem,
     op_remu,
     op_sll,
-    op_sra,
+    op_sra,//10
     op_srl,
     op_sub,
     op_xor,
@@ -29,7 +29,7 @@ enum kite_opcode {
     op_slli,
     op_srai,
     op_srli,
-    op_lb,
+    op_lb,//20
     op_lbu,
     op_lh,
     op_lhu,
@@ -40,7 +40,7 @@ enum kite_opcode {
     op_xori,
     /* S-type */
     op_sb,
-    op_sh,
+    op_sh,//30
     op_sw,
     op_sd,
     /* SB-type */
@@ -53,8 +53,8 @@ enum kite_opcode {
     /* UJ-type */
     op_jal,
     /* FR-type */
-    op_faddd,
-    op_fdivd,
+    op_sltiu,//op_faddd,
+    op_fdivd,//40
     op_fmuld,
     op_fsubd,
     /* FI-type */
@@ -196,7 +196,7 @@ static kite_opcode_type kite_op_type[num_kite_opcodes] __attribute__((unused)) =
     /* UJ-type */
     op_uj_type, // op_jal
     /* FR-type */
-    op_fr_type, // op_faddd
+    op_i_type, // op_sltiu
     op_fr_type, // op_fdivd
     op_fr_type, // op_fmuld
     op_fr_type, // op_fsubd
@@ -254,7 +254,7 @@ static unsigned kite_op_latency[num_kite_opcodes] __attribute__((unused)) = {
     /* UJ-type */
     1,  // op_jal
     /* FR-type */
-    1,  // op_faddd
+    5,  // op_sltiu
     2,  // op_fdivd
     2,  // op_fmuld
     1,  // op_fsubd
@@ -312,7 +312,7 @@ static std::string kite_opcode_str[num_kite_opcodes] __attribute__((unused)) = {
     /* UJ-type */
     "jal",
     /* FR-type */
-    "fadd.d",
+    "sltiu",
     "fdiv.d",
     "fmul.d",
     "fsub.d",
