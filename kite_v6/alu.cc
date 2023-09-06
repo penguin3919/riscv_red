@@ -47,6 +47,7 @@ void alu_t::run(inst_t *m_inst) {
 
     // ALU operations for different type of instructions.
     switch(m_inst->op) {
+        case op_sltiu:  { m_inst->rd_val = (unsigned)m_inst->rs1_val < (unsigned)m_inst->imm; break; }
         case op_add:  { m_inst->rd_val = m_inst->rs1_val + m_inst->rs2_val; break; }
         case op_and:  { m_inst->rd_val = m_inst->rs1_val & m_inst->rs2_val; break; }
         case op_div:  { divide_by_zero = (m_inst->rs2_val == 0);
@@ -107,8 +108,8 @@ void alu_t::run(inst_t *m_inst) {
                                                 (m_inst->pc + 4); break; }
         case op_lui:  { m_inst->rd_val = m_inst->imm << 12; break; }
         case op_jal:  { m_inst->rd_val = m_inst->pc + 4; break; }
-        case op_faddd:{ m_inst->rd_val = read_int(read_fp(m_inst->rs1_val) +
-                                                  read_fp(m_inst->rs2_val)); break; }
+        //case op_faddd:{ m_inst->rd_val = read_int(read_fp(m_inst->rs1_val) +
+         //                                         read_fp(m_inst->rs2_val)); break; }
         case op_fsubd:{ m_inst->rd_val = read_int(read_fp(m_inst->rs1_val) -
                                                   read_fp(m_inst->rs2_val)); break; }
         case op_fmuld:{ m_inst->rd_val = read_int(read_fp(m_inst->rs1_val) *
