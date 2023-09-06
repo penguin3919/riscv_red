@@ -219,7 +219,7 @@ void hex_to_instruction(FILE* mid2,int line, unsigned int inst2, unsigned int* s
     char* load[6]={"lb","lh","lw","nop","lbu","lhu"};
     char* branch[8]={"beq","bne","nop","nop","blt","bge","blt","bge"};
     char* store[3]={"sb","sh","sw"};
-    char* ir19[8]={"addi","slli","srai","nop","xori","srli","ori","andi"};
+    char* ir19[8]={"addi","slli","srai","sltiu","xori","srli","ori","andi"};
     char* r51[8]={"add","sll","sub","sra","xor","srl","or","and"};
     char* mul51[8]={"mul","mul","mul","mul","div","divu","rem","remu"};
 
@@ -397,7 +397,7 @@ void hex_to_instruction(FILE* mid2,int line, unsigned int inst2, unsigned int* s
             sprintf(temp4,"%s %s x%d, jump%d\n",temp3,inst3,rd,jump0);
             break;
         default:
-            sprintf(temp4,"%s no op found\n",temp3);
+            sprintf(temp4,"nop\n");
         }
     }
 
