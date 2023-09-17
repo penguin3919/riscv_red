@@ -163,10 +163,11 @@ int readelf(FILE* pFile, unsigned char** text0,int* size,unsigned int** sym0,int
         fseek(pFile,goaloff2,SEEK_SET);
         fread(strtab2,1,temp3_size,pFile);
        
-        *sym0=(unsigned int*)malloc((num3*2)+2);
 
         //sym_count->init_val=3
         num3=goalsize/sizeof(symbols);
+        *sym0=(unsigned int*)malloc((num3*2)+2);
+        
         *sym_size=num3;
         for(int i=0;i<num3;i++)
         {
